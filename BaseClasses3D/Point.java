@@ -2,7 +2,7 @@ package BaseClasses3D;
 
 import java.awt.Graphics;
 
-public class Object implements Comparable<Object>{
+public class Point implements Comparable<Point>{
 	public Vector3 pos;
 	protected int screenWidth = 800;
 	protected int screenHeight = 600;
@@ -14,18 +14,18 @@ public class Object implements Comparable<Object>{
 	protected double resetDistance;
 	protected boolean render;
 	protected boolean is3DObj;
-	protected Object(double xCoord, double yCoord, double zCoord, double resetDistance)
+	protected Point(double xCoord, double yCoord, double zCoord, double resetDistance)
 	{
 		this.resetDistance = resetDistance;
 		this.pos = new Vector3(xCoord, yCoord, zCoord);
 	}
-	protected Object(Vector3 inpPos, double resetDistance)
+	protected Point(Vector3 inpPos, double resetDistance)
 	{
 		this.pos = inpPos.copy();
 	}
-	public Object copy()
+	public Point copy()
 	{
-		Object out = new Object(this.pos.copy(), resetDistance);
+		Point out = new Point(this.pos.copy(), resetDistance);
 		return out;
 	}
 	public Vector3 getCenterScreenPos(Vector3 camera, double maxSizeInPx, double time)
@@ -67,7 +67,7 @@ public class Object implements Comparable<Object>{
 	}
 
 	@Override
-	public int compareTo(Object object)
+	public int compareTo(Point object)
 	{
 		if (object.pos.z > this.pos.z)
 		{

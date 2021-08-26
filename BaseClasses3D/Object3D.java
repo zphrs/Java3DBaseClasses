@@ -6,7 +6,7 @@ import java.util.Collections;
 
 import java.util.ArrayList;
 
-public class Object3D extends Object {
+public class Object3D extends Point {
 	Plane3D[] planes;
 	ArrayList<Object3D> childObjects = new ArrayList<Object3D>();
 	Object3D parent;
@@ -19,12 +19,17 @@ public class Object3D extends Object {
 	Vector3 up = new Vector3(0, 1, 0);
 	Vector3 acceleration = new Vector3();
 	private boolean wireframe = false;
-	/*Planes are relative to center position. See SquarePrism class for example.*/
+	/*Planes are relative to center position. See RectPrism class for example.*/
 	public Object3D(double x, double y, double z, double resetDistance)
 	{
 		super(x, y, z, resetDistance);
 		this.is3DObj = true;
 	}
+	/**
+	 * Makes Object3D with position and resetDistance. 
+	 * @param pos Initial position of Object3D
+	 * @param resetDistance how far away the object will be placed after the object passes the camera. use 0 for no transform.
+	 */
 	public Object3D(Vector3 pos, double resetDistance)
 	{
 		super(pos, resetDistance);
@@ -267,7 +272,7 @@ public class Object3D extends Object {
 		bounding[1] = new Vector3(-Double.MAX_VALUE, -Double.MAX_VALUE, -Double.MAX_VALUE);
 		for(Plane3D plane : this.toPlanes())
 		{
-			for (Object point : plane.points)
+			for (Point point : plane.points)
 			{
 				point.pos = point.pos.subtract(this.pos);
 				bounding[0].x = Math.min(bounding[0].x, point.pos.x);

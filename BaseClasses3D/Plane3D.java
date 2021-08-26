@@ -4,7 +4,7 @@ import java.awt.Graphics;
 
 
 public class Plane3D implements Comparable<Plane3D> {
-	public Object[] points;
+	public Point[] points;
 	public Vector3 avg = new Vector3(0, 0, 0);
 	public Vector3 closestToCamera;
 	public Vector3 velocity = new Vector3(),  acceleration = new Vector3();
@@ -17,10 +17,10 @@ public class Plane3D implements Comparable<Plane3D> {
 	public Plane3D(Vector3[] inpPoints, Vector3 col, double opacity)
 	{
 		this.color = col;
-		points = new Object[inpPoints.length];
+		points = new Point[inpPoints.length];
 		for (int i = 0; i<inpPoints.length; i++)
 		{
-			points[i] = new Object(inpPoints[i], 0);
+			points[i] = new Point(inpPoints[i], 0);
 		}
 		this.opacity = opacity;
 		for (int i = 0; i<points.length; i++)
@@ -33,10 +33,10 @@ public class Plane3D implements Comparable<Plane3D> {
 	public Plane3D(Vector3[] inpPoints, Vector3 col, double opacity, boolean luminous)
 	{
 		this.color = col;
-		points = new Object[inpPoints.length];
+		points = new Point[inpPoints.length];
 		for (int i = 0; i<inpPoints.length; i++)
 		{
-			points[i] = new Object(inpPoints[i], 0);
+			points[i] = new Point(inpPoints[i], 0);
 		}
 		this.opacity = opacity;
 		this.luminous = luminous;
@@ -50,10 +50,10 @@ public class Plane3D implements Comparable<Plane3D> {
 	public Plane3D(Vector3[] inpPoints, Vector3 col)
 	{
 		this.color = col;
-		points = new Object[inpPoints.length];
+		points = new Point[inpPoints.length];
 		for (int i = 0; i<inpPoints.length; i++)
 		{
-			points[i] = new Object(inpPoints[i], 0);
+			points[i] = new Point(inpPoints[i], 0);
 		}
 		for (int i = 0; i<points.length; i++)
 		{
@@ -91,7 +91,7 @@ public class Plane3D implements Comparable<Plane3D> {
 	{
 		int[] xPoints = new int[points.length];
 		int[] yPoints = new int[points.length];
-		Object[] rotatedPts = this.rotateAround(camera);
+		Point[] rotatedPts = this.rotateAround(camera);
 		boolean inFrame = true;
 		for (int i = 0; i<rotatedPts.length; i++)
 		{
@@ -123,7 +123,7 @@ public class Plane3D implements Comparable<Plane3D> {
 	}
 	public Plane3D get2dProjection(Camera camera, double time)
 	{
-		Object[] rotatedPts = this.rotateAround(camera);
+		Point[] rotatedPts = this.rotateAround(camera);
 		Vector3[] pts = new Vector3[points.length];
 		for (int i = 0; i<rotatedPts.length; i++)
 		{
@@ -142,7 +142,7 @@ public class Plane3D implements Comparable<Plane3D> {
 		avg = new Vector3(0, 0, 0);
 		for (int i = 0; i<inpPoints.length; i++)
 		{
-			points[i] = new Object(inpPoints[i], 0);
+			points[i] = new Point(inpPoints[i], 0);
 		}
 		avg = avg.multiply(1/(double)points.length);
 	}
@@ -197,14 +197,14 @@ public class Plane3D implements Comparable<Plane3D> {
 			points[i].pos = newPt;
 		}
 	}
-	public Object[] rotateAround(Camera camera) {
+	public Point[] rotateAround(Camera camera) {
 		if (camera.getRotations().isZeros())
 		{
 			return points;
 		}
 		double[] m = camera.getMatrix();
 		Vector3 around = camera.pos;
-		Object[] outPts = new Object[points.length];
+		Point[] outPts = new Point[points.length];
 		for (int i = 0; i < points.length; i++) {
 			Vector3 newPt = points[i].pos.subtract(around);
 			double px = newPt.x;
@@ -215,7 +215,7 @@ public class Plane3D implements Comparable<Plane3D> {
 			newPt.y = m[3]*px + m[4]*py + m[5]*pz;
 			newPt.z = m[6]*px + m[7]*py + m[8]*pz;
 			
-			outPts[i] = new Object(newPt.add(around), 0);
+			outPts[i] = new Point(newPt.add(around), 0);
 		}
 		return outPts;
 	}
@@ -223,7 +223,7 @@ public class Plane3D implements Comparable<Plane3D> {
 		this.camera = camera.pos;
 		double maxDist = 0;
 		avg = new Vector3(0, 0, 0);
-		Object[] newPts = new Object[points.length];
+		Point[] newPts = new Point[points.length];
 		newPts = this.rotateAround(camera);
 		for (int i = 0; i<points.length; i++)
 		{
