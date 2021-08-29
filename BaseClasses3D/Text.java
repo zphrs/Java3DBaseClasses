@@ -1,10 +1,8 @@
 package BaseClasses3D;
 import java.awt.font.*;
-import java.awt.Shape;
 import java.awt.Font;
 import java.awt.geom.PathIterator;
 import java.util.ArrayList;
-import java.awt.geom.GeneralPath;
 import java.awt.RenderingHints;
 
 public class Text extends Object3D {

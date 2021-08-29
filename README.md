@@ -11,5 +11,7 @@ Makes a plane of N points.
 Makes a rectangular prism. Extends Object3D. Good example of how to create a custom object.
 ## ObjFileTO3DObject
 Static function that lets you import .obj files - imports geometry from .obj file and color from the .mtl file and returns and Object3D.
+## Text
+Converts a string into a 3D object. You can change the font, size, and alignment in the constructor and you can change the rest of the properties an Object3D has like normal. Object3D.setColor(Vector3) for example.
 ## Vector3 
 A 3D vector class that does not mutate on operations. Operations return a new vector and leaves the passed in vectors unchanged.
