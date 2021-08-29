@@ -25,6 +25,9 @@ public class Object3D extends Point {
 		super(x, y, z, resetDistance);
 		this.is3DObj = true;
 	}
+	public Object3D() {
+		this(0, 0, 0, 0);
+	}
 	/**
 	 * Makes Object3D with position and resetDistance. 
 	 * @param pos Initial position of Object3D
@@ -34,6 +37,27 @@ public class Object3D extends Point {
 	{
 		super(pos, resetDistance);
 		this.is3DObj = true;
+	}
+	public String toString() {
+		String out = "";
+		out += "Object3D: " + this.getClass().getName() + "\n";
+		if (planes != null) out += "Planes: " + Arrays.toString(planes) + "\n";
+		if (childObjects.size() > 0) out += "ChildObjects: " + childObjects.toString() + "\n";
+		if (parent != null) out += "Parent: " + parent + "\n";
+		if (pos.x != 0 || pos.y != 0 || pos.z != 0) out += "Position: " + this.pos + "\n";
+		if (resetDistance != 0) out += "ResetDistance: " + this.resetDistance + "\n";
+		if (rotations.x != 0 || rotations.y != 0 || rotations.z != 0) out += "Rotation: " + this.rotations + "\n";
+		if (velocity.x != 0 || velocity.y != 0 || velocity.z != 0) out += "Velocity: " + this.velocity + "\n";
+		if (rotVelocity.x != 0 || rotVelocity.y != 0 || rotVelocity.z != 0) out += "RotVelocity: " + this.rotVelocity + "\n";
+		if (acceleration.x != 0 || acceleration.y != 0 || acceleration.z != 0) out += "Acceleration: " + this.acceleration + "\n";
+		if (forward.x != 0 || forward.y != 0 || forward.z != 0) out += "Forward: " + this.forward + "\n";
+		if (right.x != 0 || right.y != 0 || right.z != 0) out += "Right: " + this.right + "\n";
+		if (up.x != 0 || up.y != 0 || up.z != 0) out += "Up: " + this.up + "\n";
+		if (render) out += "Render: true\n";
+		else out += "Render: false\n";
+		if (wireframe) out += "Wireframe: true\n";
+		else out += "Wireframe: false\n";
+		return out;
 	}
 	public void setWireframe(boolean wireframe) {
 		this.wireframe = wireframe;
@@ -49,6 +73,10 @@ public class Object3D extends Point {
 	public void setPlanes(Plane3D[] inpPlanes)
 	{
 		planes = inpPlanes;
+	}
+	public void setPlanes(ArrayList<Plane3D> inpPlanes)
+	{
+		planes = inpPlanes.toArray(new Plane3D[inpPlanes.size()]);
 	}
 	public void setChildren(Object3D[] children)
 	{
@@ -76,6 +104,13 @@ public class Object3D extends Point {
 		for (int i = 0; i<planes.length; i++)
 		{
 			planes[i].color = color;
+		}
+	}
+	public void setColor(int hex)
+	{
+		for (int i = 0; i<planes.length; i++)
+		{
+			planes[i].color = new Vector3(hex);
 		}
 	}
 	public boolean getWireframe()
@@ -128,6 +163,17 @@ public class Object3D extends Point {
 			newPlanes[newPlanesIndex] = plane;
 			newPlanesIndex++;
 		}
+		planes = newPlanes;
+	}
+	public void addToPlanes(Plane3D inpPlane) {
+		Plane3D[] newPlanes = new Plane3D[planes.length+1];
+		int newPlanesIndex = 0;
+		for (Plane3D plane : planes)
+		{
+			newPlanes[newPlanesIndex] = plane;
+			newPlanesIndex++;
+		}
+		newPlanes[newPlanesIndex] = inpPlane;
 		planes = newPlanes;
 	}
 	public void addToChildren(Object3D[] inpChildren)
@@ -254,6 +300,11 @@ public class Object3D extends Point {
 	}
 	public void translate(Vector3 amount) {
 		this.pos = this.pos.add(amount);
+	}
+	public void scale(Vector3 amount) {
+		for (Plane3D plane : planes) {
+			plane.scale(amount);
+		}	
 	}
 
 	public Vector3 forward()

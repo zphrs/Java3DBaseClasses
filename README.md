@@ -10,6 +10,6 @@ Makes a plane of N points.
 ## RectPrism
 Makes a rectangular prism. Extends Object3D. Good example of how to create a custom object.
 ## ObjFileTO3DObject
-Lets you import .obj files - imports geometry from .obj file and color from the .mtl file
+Static function that lets you import .obj files - imports geometry from .obj file and color from the .mtl file and returns and Object3D.
 ## Vector3 
 A 3D vector class that does not mutate on operations. Operations return a new vector and leaves the passed in vectors unchanged.

@@ -2,6 +2,8 @@ package BaseClasses3D;
 
 import java.awt.Graphics;
 
+import java.util.ArrayList;
+
 
 public class Plane3D implements Comparable<Plane3D> {
 	public Point[] points;
@@ -21,6 +23,22 @@ public class Plane3D implements Comparable<Plane3D> {
 		for (int i = 0; i<inpPoints.length; i++)
 		{
 			points[i] = new Point(inpPoints[i], 0);
+		}
+		this.opacity = opacity;
+		for (int i = 0; i<points.length; i++)
+		{
+			avg = avg.add(points[i].pos);
+		}
+		avg = avg.multiply(1/((double)points.length));
+	}
+
+	public Plane3D(ArrayList<Vector3> inpPoints, Vector3 col, double opacity)
+	{
+		this.color = col;
+		points = new Point[inpPoints.size()];
+		for (int i = 0; i<inpPoints.size(); i++)
+		{
+			points[i] = new Point(inpPoints.get(i), 0);
 		}
 		this.opacity = opacity;
 		for (int i = 0; i<points.length; i++)
@@ -60,6 +78,14 @@ public class Plane3D implements Comparable<Plane3D> {
 			avg = avg.add(points[i].pos);
 		}
 		avg = avg.multiply(1/((double)points.length));
+	}
+	public Vector3[] getPoints() {
+		Vector3[] ret = new Vector3[points.length];
+		for (int i = 0; i<points.length; i++)
+		{
+			ret[i] = points[i].pos;
+		}
+		return ret;
 	}
 	public Plane3D copy()
 	{
@@ -219,6 +245,11 @@ public class Plane3D implements Comparable<Plane3D> {
 		}
 		return outPts;
 	}
+	public void scale(Vector3 amount) {
+		for (int i = 0; i < points.length; i++) {
+			points[i].pos = points[i].pos.multiply(amount);
+		}
+	}
 	public void setCamera(Camera camera) {
 		this.camera = camera.pos;
 		double maxDist = 0;
@@ -244,6 +275,9 @@ public class Plane3D implements Comparable<Plane3D> {
 	@Override
 	public int compareTo(Plane3D plane)
 	{
+		if (plane.closestToCamera == null || this.closestToCamera == null) {
+			return -1;
+		}
 		double planeDist = plane.closestToCamera.distanceFrom(camera);
 		double thisDist = this.closestToCamera.distanceFrom(camera);
 

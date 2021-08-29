@@ -9,6 +9,21 @@ public class Vector3 {
 		this.x = this.y = this.z = 0;
 	}
 
+	public Vector3(String hex) {
+		this.x = this.y = this.z = 0;
+		Color c = new Color(Integer.parseInt(hex.substring(1), 16));
+		this.x = c.getRed();
+		this.y = c.getGreen();
+		this.z = c.getBlue();
+	}
+	public Vector3(int hex) {
+		this.x = this.y = this.z = 0;
+		Color c = new Color(hex);
+		this.x = c.getRed();
+		this.y = c.getGreen();
+		this.z = c.getBlue();
+	}
+
 	public Vector3(double x, double y, double z)
 	{
 		this.x = x;
@@ -252,5 +267,12 @@ public class Vector3 {
 	public int[] signOfVector()
 	{
 		return new int[]{(int)Math.signum(x), (int)Math.signum(y), (int)Math.signum(z)};
+	}
+
+	public Vector3 lerp(Vector3 a, double t) {
+		return this.add(a.subtract(this).multiply(t));
+	}
+	public Vector3 quadraticBezier(Vector3 control, Vector3 end, double t) {
+		return this.lerp(control, t).lerp(end, t);
 	}
 }

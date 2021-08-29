@@ -7,10 +7,14 @@ public class Test extends JPanel {
 	Camera camera = new Camera(0, 0, -250);
 	double deltaTime;
 	double time;
-	int mode = 0;
 	RectPrism rq = new RectPrism(0, 0, 0, 250, 250, 250, new Vector3(255, 255, 255));
-	Test()// defaults to bird
+	Text t = new Text("cube", "Arial", 50, Text.ALIGN_CENTER, 0, 0, 0, 0, 5);
+	Object3D main = new Object3D();
+	Test()
 	{
+		t.setColor(new Vector3(0, 0, 0));
+		main.addToChildren(rq);
+		main.addToChildren(t);
 	}
 	@Override
 	public Dimension getPreferredSize() {
@@ -21,7 +25,9 @@ public class Test extends JPanel {
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
 		this.drawBackground(g);
-		rq.draw(g, camera, time, 1);
+		// rq.draw(g, camera, time, 1);
+		// t.draw(g, camera, time, 1);
+		main.draw(g, camera, time, 1);
 	}
 	public void animate()
 	{
