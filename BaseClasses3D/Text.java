@@ -84,7 +84,6 @@ public class Text extends Object3D {
 			// double y3 = coordinates[5]; // the second control y coordinate of the current point
 			switch (type) {
             case PathIterator.SEG_QUADTO:
-				System.out.println(fontSize*resolution);
 				int lineSegments = (int)(fontSize*resolution);
 				for (int i = 1; i < lineSegments; i++) {
 					double t = (double)i / (double)(lineSegments);
