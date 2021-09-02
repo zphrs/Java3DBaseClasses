@@ -113,6 +113,20 @@ public class Object3D extends Point {
 			planes[i].color = new Vector3(hex);
 		}
 	}
+	public void replaceColor(Vector3 oldColor, Vector3 newColor)
+	{
+		if (planes != null) for (int i = 0; i<planes.length; i++)
+		{
+			if (planes[i].color.equals(oldColor))
+			{
+				planes[i].color = newColor;
+			}
+		}
+		for (Object3D obj : childObjects)
+		{
+			obj.replaceColor(oldColor, newColor);
+		}
+	}
 	public boolean getWireframe()
 	{
 		return wireframe;

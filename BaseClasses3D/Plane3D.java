@@ -275,7 +275,14 @@ public class Plane3D implements Comparable<Plane3D> {
 	@Override
 	public int compareTo(Plane3D plane)
 	{
+		if (this.points.length==0) {
+			return -1;
+		}
+		if (plane.points.length==0) {
+			return 1;
+		}
 		if (plane.closestToCamera == null || this.closestToCamera == null) {
+			System.out.println("Plane3D.compareTo: null closestToCamera");
 			return -1;
 		}
 		double planeDist = plane.closestToCamera.distanceFrom(camera);
