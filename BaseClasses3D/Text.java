@@ -19,13 +19,15 @@ public class Text extends Object3D {
 	private int horizAlignment = DEFAULT_ALIGNMENT;
 	private int vertAlignment = DEFAULT_ALIGNMENT;
 	private int fontSize = 50;
+	private Font font;
 	public Text(String text, String fontFile, int fontSize, int horizAlignment, int vertAlignment, double x, double y, double z, double resetDistance, double resolution) {
 		super(x, y, z, resetDistance);
 		this.resolution = resolution;
 		this.horizAlignment = horizAlignment;
 		this.vertAlignment = vertAlignment;
 		this.fontSize = fontSize;
-		this.initPlanes(text, new Font(fontFile, Font.PLAIN, fontSize));
+		this.font = new Font(fontFile, Font.PLAIN, fontSize);
+		this.initPlanes(text);
 		Vector3[] bounding = this.getBounding();
 		switch (this.horizAlignment) {
 			case HORIZ_ALIGN_LEFT:
@@ -56,7 +58,7 @@ public class Text extends Object3D {
 	// for the inside points and clockwise for the outside points.
 	// idk it's too much work rn and my current solution will work good enough
 	// for the person lab.
-	public void initPlanes(String text, Font font) {
+	public void initPlanes(String text) {
 		FontRenderContext frc = new FontRenderContext(
         null,
         RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT,
@@ -133,8 +135,11 @@ public class Text extends Object3D {
             }
 			iterator.next();
         }
-		Plane3D plane = new Plane3D(out, new Vector3(255, 255, 255), 1);
-		this.addToPlanes(plane);
+		if (out.size() > 0)
+		{
+			Plane3D plane = new Plane3D(out, new Vector3(255, 255, 255), 1);
+			this.addToPlanes(plane);
+		}
 	}
 
 }
