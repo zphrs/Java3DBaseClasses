@@ -4,11 +4,11 @@ import java.awt.Graphics;
 import java.awt.Dimension;
 import BaseClasses3D.*;
 public class Test extends JPanel {
-	Camera camera = new Camera(0, 0, -250);
+	Camera camera = new Camera(0, 0, -500);
 	double deltaTime;
 	double time;
 	RectPrism rq = new RectPrism(0, 0, 0, 250, 250, 250, new Vector3(255, 255, 255));
-	Text t = new Text("cube", "Arial", 50, Text.ALIGN_CENTER, 0, 0, 0, 0, 5);
+	Text t = new Text("cube", "Monospaced", 200, Text.HORIZ_ALIGN_CENTER, Text.VERT_ALIGN_CENTER, 0, 0, -127, 0, .05);
 	Object3D main = new Object3D();
 	Test()
 	{
@@ -47,7 +47,8 @@ public class Test extends JPanel {
 			oldTime = System.nanoTime();
 			firstLoop = false;
 			this.time += deltaTime;
-			rq.rotate(new Vector3(deltaTime*.5, deltaTime*.923476, deltaTime*.763489));
+			main.rotate(new Vector3(deltaTime*.5, deltaTime*.923476, deltaTime*.763489));
+			// t.rotate(new Vector3(deltaTime*.5, deltaTime*.923476, deltaTime*.763489));
 			repaint();
 			//System.out.println(1/deltaTime);
 		}

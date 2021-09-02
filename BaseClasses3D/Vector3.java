@@ -273,6 +273,8 @@ public class Vector3 {
 		return this.add(a.subtract(this).multiply(t));
 	}
 	public Vector3 quadraticBezier(Vector3 control, Vector3 end, double t) {
-		return this.lerp(control, t).lerp(end, t);
+		Vector3 l1 = this.lerp(control, t);
+		Vector3 l2 = control.lerp(end, t);
+		return l1.lerp(l2, t);
 	}
 }

@@ -7,32 +7,49 @@ import java.awt.RenderingHints;
 
 public class Text extends Object3D {
 	public static final int DEFAULT_COLOR = 0xFFFFFF;
-	public static final int ALIGN_LEFT = 0;
-	public static final int ALIGN_CENTER = 1;
-	public static final int ALIGN_RIGHT = 2;
-	public static final int DEFAULT_ALIGNMENT = ALIGN_LEFT;
+	public static final int HORIZ_ALIGN_LEFT = 0;
+	public static final int HORIZ_ALIGN_CENTER = 1;
+	public static final int HORIZ_ALIGN_RIGHT = 2;
+	public static final int VERT_ALIGN_BOTTOM = 0;
+	public static final int VERT_ALIGN_CENTER = 1;
+	public static final int VERT_ALIGN_TOP = 2;
+	public static final int DEFAULT_ALIGNMENT = 0;
 	public static final int CURVE_SEGMENTS = 5;
-	private int curveSegments = CURVE_SEGMENTS;
-	public Object3D font;
-
-	public Text(String text, String fontFile, int fontSize, int alignment, double x, double y, double z, double resetDistance, int curveSegments) {
+	private double resolution = CURVE_SEGMENTS;
+	private int horizAlignment = DEFAULT_ALIGNMENT;
+	private int vertAlignment = DEFAULT_ALIGNMENT;
+	private int fontSize = 50;
+	public Text(String text, String fontFile, int fontSize, int horizAlignment, int vertAlignment, double x, double y, double z, double resetDistance, double resolution) {
 		super(x, y, z, resetDistance);
-		this.curveSegments = curveSegments;
+		this.resolution = resolution;
+		this.horizAlignment = horizAlignment;
+		this.vertAlignment = vertAlignment;
+		this.fontSize = fontSize;
 		this.initPlanes(text, new Font(fontFile, Font.PLAIN, fontSize));
 		Vector3[] bounding = this.getBounding();
-		switch (alignment) {
-			case ALIGN_LEFT:
+		switch (this.horizAlignment) {
+			case HORIZ_ALIGN_LEFT:
 				break;
-			case ALIGN_CENTER:
-				this.translate(bounding[1].subtract(bounding[0]).multiply(-0.5));
+			case HORIZ_ALIGN_CENTER:
+				this.translate(new Vector3((bounding[0].x - bounding[1].x)/2, 0, 0));
 				break;
-			case ALIGN_RIGHT:
-				this.translate(new Vector3(bounding[0].x - bounding[1].x, 0, 0));
+			case HORIZ_ALIGN_RIGHT:
+				this.translate(new Vector3(bounding[1].x - bounding[0].x, 0, 0));
 				break;
+		}
+		switch(this.vertAlignment) {
+			case VERT_ALIGN_BOTTOM:
+				break;
+			case VERT_ALIGN_CENTER:
+				this.translate(new Vector3(0, (bounding[1].y - bounding[0].y)/2, 0));
+				break;
+			case VERT_ALIGN_TOP:
+				this.translate(new Vector3(0, bounding[1].y - bounding[0].y, 0));
+			break;
 		}
 	}
 	public Text(String text) {
-		this(text, "Arial", 50, DEFAULT_ALIGNMENT, 0.0, 0.0, 0.0, 0.0, CURVE_SEGMENTS);
+		this(text, "Arial", 50, DEFAULT_ALIGNMENT, DEFAULT_ALIGNMENT, 0.0, 0.0, 0.0, 0.0, CURVE_SEGMENTS);
 	}
 	// TODO: add triangulation algo to fix holes in text like for o and e
 	// or you could maybe fix in a hacky way by somehow  going counterclockwise
@@ -65,8 +82,10 @@ public class Text extends Object3D {
 			// double y3 = coordinates[5]; // the second control y coordinate of the current point
 			switch (type) {
             case PathIterator.SEG_QUADTO:
-				for (int i = 1; i < curveSegments; i++) {
-					double t = (double)i / (double)curveSegments;
+				System.out.println(fontSize*resolution);
+				int lineSegments = (int)(fontSize*resolution);
+				for (int i = 1; i < lineSegments; i++) {
+					double t = (double)i / (double)(lineSegments);
 					out.add(currPt.quadraticBezier(new Vector3(x1, y1, 0), new Vector3(x2, y2, 0), t));
 				}
 				currPt.x = x2;
