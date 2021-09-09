@@ -223,6 +223,13 @@ public class Plane3D implements Comparable<Plane3D> {
 			points[i].pos = newPt;
 		}
 	}
+	public void translate(Vector3 amount)
+	{
+		for (int i = 0; i<points.length; i++)
+		{
+			points[i].pos = points[i].pos.add(amount);
+		}
+	}
 	public Point[] rotateAround(Camera camera) {
 		if (camera.getRotations().isZeros())
 		{
