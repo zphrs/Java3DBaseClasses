@@ -1,10 +1,8 @@
 package BaseClasses3D;
-
-import java.awt.Graphics;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-
-import java.util.ArrayList;
+import java.awt.Graphics;
 
 public class Object3D extends Point {
 	Plane3D[] planes;
@@ -18,7 +16,16 @@ public class Object3D extends Point {
 	Vector3 right = new Vector3(1, 0, 0);
 	Vector3 up = new Vector3(0, 1, 0);
 	Vector3 acceleration = new Vector3();
+	private Vector3 posInterpTo;
+	private Vector3 initInterpPos;
+	private double interpDownAt;
+	private double interpDuration;
 	private boolean wireframe = false;
+	protected Plane3D[] planeBuffer;
+	private Vector3 rotInterpTo;
+	private Vector3 initInterpRot;
+	private double rotInterpDownAt;
+	private double rotInterpDuration;
 	/*Planes are relative to center position. See RectPrism class for example.*/
 	public Object3D(double x, double y, double z, double resetDistance)
 	{
@@ -99,6 +106,7 @@ public class Object3D extends Point {
 			child.parent = this;
 		}
 	}
+	
 	public void setColor(Vector3 color)
 	{
 		for (int i = 0; i<planes.length; i++)
@@ -117,6 +125,7 @@ public class Object3D extends Point {
 	{
 		if (planes != null) for (int i = 0; i<planes.length; i++)
 		{
+
 			if (planes[i].color.equals(oldColor))
 			{
 				planes[i].color = newColor;
@@ -204,9 +213,37 @@ public class Object3D extends Point {
 		this.addToChildren(new Object3D[]{inpChild});
 	}
 
+	public void removeChild(Object3D child) 
+	{
+		childObjects.remove(child);
+	}
+
 	public int draw(Graphics g, Camera camera, double time, double ambientBrightness)
 	{
 		return this.draw(g, camera, time, ambientBrightness, new Vector3());
+	}
+	public void prepPlanes(Camera camera, double time, double ambientBrightness)
+	{
+		int planeCt = this.planes.length;
+		for (Object3D child : childObjects)
+		{
+			child.prepPlanes(camera, time, ambientBrightness);
+			planeCt += child.planeBuffer.length;
+		}
+		planeBuffer = new Plane3D[planeCt];
+		int planeBufferInd = 0;
+		for (int i = 0; i<planes.length; i++)
+		{
+			planeBuffer[planeBufferInd++] = planes[i];
+		}
+		for (Object3D child : childObjects)
+		{
+			for (int i = 0; i<child.planeBuffer.length; i++)
+			{
+				planeBuffer[planeBufferInd++] = child.planeBuffer[i];
+			}
+		}
+
 	}
 	@Override
 	public int draw(Graphics g, Camera camera, double time, double ambientBrightness, Vector3 xyOffset) {
@@ -312,8 +349,26 @@ public class Object3D extends Point {
 			}
 		}
 	}
+
 	public void translate(Vector3 amount) {
 		this.pos = this.pos.add(amount);
+	}
+	public void smoothTranslate(Vector3 amount, double time, double duration) {
+		this.posInterpTo = amount.copy();
+		this.initInterpPos = this.pos.copy();
+		this.interpDownAt = time;
+		this.interpDuration = duration;
+		this.childObjects.forEach(obj -> obj.smoothTranslate(amount, time, duration));
+	}
+	public void smoothRotate(Vector3 amount, double time, double duration) {
+		this.rotInterpTo = amount.copy();
+		this.initInterpRot = this.getRotations().copy();
+		this.rotInterpDownAt = time;
+		this.rotInterpDuration = duration;
+		this.childObjects.forEach(obj -> obj.smoothRotate(amount, time, duration));
+	}
+	public Vector3 getRotations() {
+		return this.rotations;
 	}
 	public void scale(Vector3 amount) {
 		for (Plane3D plane : planes) {
@@ -430,8 +485,55 @@ public class Object3D extends Point {
 	public void update(double deltaTime)
 	{
 		this.velocity = this.velocity.add(this.acceleration.multiply(deltaTime));
+		if (this.posInterpTo != null)
+		{
+			this.pos = this.initInterpPos.lerp(this.posInterpTo, this.interpDownAt);
+			if (this.pos.closeTo(this.posInterpTo, 0.3))
+			{
+				this.pos = this.posInterpTo;
+				this.posInterpTo = null;
+			}
+		}
 		this.pos = this.pos.add(this.velocity.multiply(deltaTime));
+
 		this.rotate(this.rotVelocity.multiply(deltaTime));
+	}
+	public void updateInterps(double time) {
+		if (this.posInterpTo != null)
+		{
+			double t = (time-this.interpDownAt)/this.interpDuration;
+			this.pos = this.initInterpPos.lerp(this.posInterpTo, t);
+			if (t >= 1)
+			{
+				this.pos = this.posInterpTo;
+				this.posInterpTo = null;
+			}
+		}
+		
+		if (this.rotInterpTo != null)
+		{
+			double t = (time-this.rotInterpDownAt)/this.rotInterpDuration;
+			this.setRotations(this.initInterpRot.lerp(this.rotInterpTo, t));
+			if (t >= 1)
+			{
+				this.setRotations(this.rotInterpTo);
+				this.rotInterpTo = null;
+			}
+		}
+		for (Object3D child : childObjects)
+		{
+			child.updateInterps(time);
+		}
+	}
+
+	public void clearInterps()
+	{
+		this.posInterpTo = null;
+		this.rotInterpTo = null;
+	}
+	public void setRotations(Vector3 rot)
+	{
+		this.rotations = rot;
 	}
 	public Vector3 getGlobalPos()
 	{
@@ -453,5 +555,15 @@ public class Object3D extends Point {
 	{
 		Vector3 out = getGlobalPos();
 		return global.subtract(out);
+	}
+	
+	public Object3D getParent()
+	{
+		return this.parent;
+	}
+
+	public Vector3 getInterpingTo()
+	{
+		return this.posInterpTo != null?this.posInterpTo:this.pos;
 	}
 }

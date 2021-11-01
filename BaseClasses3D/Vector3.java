@@ -254,6 +254,10 @@ public class Vector3 {
 	{
 		return new Vector3(Math.cos(y)*Math.cos(x), Math.cos(y)*Math.sin(x), -Math.sin(y));
 	}
+	public boolean equals(Vector3 a)
+	{
+		return Math.abs(a.x-x)<2 && Math.abs(a.y-y)<2 && Math.abs(a.z-z)<2;
+	}
 	public boolean closeTo(Vector3 a, double dist)
 	{
 		return this.distanceFrom(a) < dist;
@@ -268,6 +272,11 @@ public class Vector3 {
 	{
 		return new int[]{(int)Math.signum(x), (int)Math.signum(y), (int)Math.signum(z)};
 	}
+	public boolean passedTarget(Vector3 target, int[] sign)
+	{
+		Vector3 diffVector = this.subtract(target);
+		return diffVector.x*sign[0] < 0 || diffVector.y*sign[1] < 0 || diffVector.z*sign[2] < 0;
+	}
 
 	public Vector3 lerp(Vector3 a, double t) {
 		return this.add(a.subtract(this).multiply(t));
@@ -277,4 +286,5 @@ public class Vector3 {
 		Vector3 l2 = control.lerp(end, t);
 		return l1.lerp(l2, t);
 	}
+	
 }

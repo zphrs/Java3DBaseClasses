@@ -14,7 +14,7 @@ public class Text extends Object3D {
 	public static final int VERT_ALIGN_CENTER = 1;
 	public static final int VERT_ALIGN_TOP = 2;
 	public static final int DEFAULT_ALIGNMENT = 0;
-	public static final int CURVE_SEGMENTS = 5;
+	public static final double CURVE_SEGMENTS = .01;
 	private double resolution = CURVE_SEGMENTS;
 	private int horizAlignment = DEFAULT_ALIGNMENT;
 	private int vertAlignment = DEFAULT_ALIGNMENT;
@@ -28,31 +28,48 @@ public class Text extends Object3D {
 		this.fontSize = fontSize;
 		this.font = new Font(fontFile, Font.PLAIN, fontSize);
 		this.initPlanes(text);
+		alignText();
+	}
+	public void alignText() {
+
 		Vector3[] bounding = this.getBounding();
 		switch (this.horizAlignment) {
 			case HORIZ_ALIGN_LEFT:
 				break;
 			case HORIZ_ALIGN_CENTER:
-				this.translate(new Vector3((bounding[0].x - bounding[1].x)/2, 0, 0));
+				for (Plane3D plane : planes) {
+					plane.translate(new Vector3((bounding[0].x - bounding[1].x)/2, 0, 0));
+				}
 				break;
 			case HORIZ_ALIGN_RIGHT:
-				this.translate(new Vector3(bounding[1].x - bounding[0].x, 0, 0));
+				for (Plane3D plane : planes) {
+					plane.translate(new Vector3(bounding[1].x - bounding[0].x, 0, 0));
+				}
 				break;
 		}
 		switch(this.vertAlignment) {
 			case VERT_ALIGN_BOTTOM:
 				break;
 			case VERT_ALIGN_CENTER:
-				this.translate(new Vector3(0, (bounding[1].y - bounding[0].y)/2, 0));
+				for (Plane3D plane : planes) {
+					plane.translate(new Vector3(0, (bounding[0].y - bounding[1].y - fontSize)/2, 0));
+				}
 				break;
 			case VERT_ALIGN_TOP:
-				this.translate(new Vector3(0, bounding[1].y - bounding[0].y, 0));
-			break;
+				for (Plane3D plane : planes) {
+					plane.translate(new Vector3(0, bounding[0].y - bounding[1].y - fontSize/2, 0));
+				}
+				break;
 		}
 	}
 	public Text(String text) {
 		this(text, "Arial", 50, DEFAULT_ALIGNMENT, DEFAULT_ALIGNMENT, 0.0, 0.0, 0.0, 0.0, CURVE_SEGMENTS);
 	}
+	public void updateText(String text) {
+		this.initPlanes(text);
+		alignText();
+	}
+
 	// TODO: add triangulation algo to fix holes in text like for o and e
 	// or you could maybe fix in a hacky way by somehow  going counterclockwise
 	// for the inside points and clockwise for the outside points.
@@ -146,6 +163,10 @@ public class Text extends Object3D {
 				this.addToPlanes(plane);
 			}
 		}
-	}
 
+	}
+	
+	public int getFontSize() {
+		return fontSize;
+	}
 }

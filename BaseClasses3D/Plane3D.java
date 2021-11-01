@@ -1,7 +1,5 @@
 package BaseClasses3D;
-
 import java.awt.Graphics;
-
 import java.util.ArrayList;
 
 
@@ -292,8 +290,8 @@ public class Plane3D implements Comparable<Plane3D> {
 			System.out.println("Plane3D.compareTo: null closestToCamera");
 			return -1;
 		}
-		double planeDist = plane.closestToCamera.distanceFrom(camera);
-		double thisDist = this.closestToCamera.distanceFrom(camera);
+		double planeDist = Math.round(plane.closestToCamera.distanceFrom(camera)*100);
+		double thisDist = Math.round(this.closestToCamera.distanceFrom(camera)*100);
 
 		if (planeDist > thisDist)
 		{

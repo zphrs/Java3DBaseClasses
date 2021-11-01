@@ -49,6 +49,9 @@ public class Camera extends Object3D {
 	public double[] getMatrix() {
 		return m;
 	}
+	public Vector3 forward() {
+		return new Vector3(-m[2], -m[5], m[8]);
+	}
 	/*@Override
 	public void rotate(Vector3 amount) {
 		rotations = rotations.add(amount);
